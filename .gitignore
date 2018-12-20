@@ -1,5 +1,7 @@
 # Compiled class file
 *.class
+!Server_Stub.class
+!InterfaceServer.class
 
 # Log file
 *.log
