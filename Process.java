@@ -90,50 +90,58 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 
     @Override
     public void Election(int initID, int callerID) throws Exception{
-        new Thread(() -> {
-            try{
-                if (!commited){
-                    lookForNeigh();
-                    commited = true;
-                    n = 0; 
-                    this.origen = callerID;
-                    for (int i = 0;i < neighborRMI.length;i++) {
-                        if (neighborID[i] == this.origen) {
-                            continue;
+        Thread t1 = new Thread(new Runnable(){
+            @Override
+            public void run(){
+                try{
+                    if (!commited){
+                        lookForNeigh();
+                        commited = true;
+                        n = 0; 
+                        origen = callerID;
+                        for (int i = 0;i < neighborRMI.length;i++) {
+                            if (neighborID[i] == origen) {
+                                continue;
+                            }
+                            System.out.print(ID + ": ID " + initID + " se candidatea, avisare a " + neighborID[i] + ".\n");
+                            neighborRMI[i].Election(initID, ID); 
                         }
-                        System.out.print(this.ID + ": ID " + initID + " se candidatea, avisare a " + neighborID[i] + ".\n");
-                        neighborRMI[i].Election(initID, this.ID); 
                     }
-                }
-                n++;
-                if (n == neighborRMI.length && !echoing){
-                    commited = false;
-                    this.Echo(initID);
-                }
-            } catch(Exception e){}        
-        }).start();
+                    n++;
+                    if (n == neighborRMI.length){
+                        commited = false;
+                        Echo(initID);
+                    }
+                } catch(Exception e){} 
+            }       
+        });
+        t1.start();
     }
 
     @Override
     public void Echo(int initID) throws Exception{
-        new Thread(() -> {
-            try{
-                if (initID == this.ID) {
-                    confirms += 1;
-                    if (confirms == neighborID.length) {
-                        System.out.print("Soy el representante??\n");
-                    }
-                } else{
-                    for (int i = 0; i < neighborRMI.length ;i++ ) {
-                        if (neighborID[i] == origen) {
-                            System.out.print(this.ID + ": mandare un Echo a mi origen "+this.origen+".\n");
-                            neighborRMI[i].Echo(initID);
-                            break;
+        Thread t1 = new Thread(new Runnable(){
+            @Override
+            public void run(){
+                try{
+                    if (initID == ID) {
+                        confirms += 1;
+                        if (confirms == neighborID.length) {
+                            System.out.print("Soy el representante??\n");
                         }
-                    }
-                } 
-            } catch(Exception e){}        
-        }).start();
+                    } else{
+                        for (int i = 0; i < neighborRMI.length ;i++ ) {
+                            if (neighborID[i] == origen) {
+                                System.out.print(ID + ": mandare un Echo a mi origen "+origen+".\n");
+                                neighborRMI[i].Echo(initID);
+                                break;
+                            }
+                        }
+                    } 
+                } catch(Exception e){}   
+            }       
+        });
+        t1.start();
     }
 
    
