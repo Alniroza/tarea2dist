@@ -11,7 +11,7 @@ public class ProcessMain{
         int maxID = ID;
 
         String[] tempNeighbor = args[1].split(","); //se separa la lista con los IDs vecinos
-        int[] neighborID = new int[tempNeighbor.length];
+        Integer[] neighborID = new Integer[tempNeighbor.length];
         for(int i = 0; i < tempNeighbor.length; i++){
             neighborID[i] = Integer.parseInt(tempNeighbor[i]);
         }

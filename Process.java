@@ -78,7 +78,7 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
         System.out.print(this.ID + ": Iniciare una eleccion, le avisare a mis vecinos.\n");
         this.initiator = true;
         this.commited = true;
-        int n = 0;
+        this.n = 0;
         lookForNeigh();
         
         for (int i = 0;i < neighborRMI.length ; i++) {
@@ -95,19 +95,20 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
             n = 0; 
             this.origen = callerID;
             for (int i = 0;i < neighborRMI.length;i++) {
+                if (neighborID[i] == this.origen) {
+                    continue;
+                }
                 System.out.print(this.ID + ": ID " + initID + " se candidatea, avisare a " + neighborID[i] + ".\n");
-                neighborRMI[i].Election(initID, this.ID);
+                neighborRMI[i].Election(initID, this.ID); 
             }
         }
         n++;
-        for (int i = 0;i < neighborRMI.length;i++) {
-            neighborRMI[i].Echo(initID);
-        }            
+        Echo(initID);          
     }
 
     @Override
     public void Echo(int initID) throws Exception{
-        if (n == neighborRMI.length) {
+        if (n == neighborRMI.length){
             commited = false;
             if (initID == this.ID) {
                 System.out.print("Soy el representante??\n");
