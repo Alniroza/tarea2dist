@@ -12,7 +12,7 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
     private List<Integer> max_received_neighbors = new ArrayList<Integer>(); //Lista de los vecinos que ME ENVIARON el maxID
     private List<Integer> max_send_neighbors = new ArrayList<Integer>(); //Lista de los vecinos que LE ENVIE el maxID
     private boolean text_received = false;
-    private int aliveCounter;
+    private int aliveCounter = 0;
 
     //Variables necesarias para el Algoritmo de eleccion y echos.
     private boolean initiator;
@@ -21,8 +21,6 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
     private int n;
     private int origen;
     private int confirms;
-
-    public int aliveCounter = 0;
 
     //Variables importantes para definir vecinos.
     private Integer[] neighborID;
@@ -88,6 +86,9 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
             System.out.print(this.ID + ": Avisando a " + neighborID[i]+"\n");
             neighborRMI[i].Election(this.ID, this.ID);
         }
+
+        createTimerTaskRepresentante(neighborRMI, neighborID, ID);
+
     }
 
     @Override
@@ -295,7 +296,7 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
     }
 
     //esto debe ser ejectutado por el representante una vez escogido y notificado
-    public void createTimerTaskRepresentante(ProcessInterface[] neighborRMI, int[] neighborID, int ID) throws Exception{
+    public void createTimerTaskRepresentante(ProcessInterface[] neighborRMI, Integer[] neighborID, int ID) throws Exception{
         try {
             TimerTask timerTask = new TimerTask(){
                 public void run(){ //Ejecucion
