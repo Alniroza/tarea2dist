@@ -12,11 +12,12 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
     private List<Integer> max_received_neighbors = new ArrayList<Integer>(); //Lista de los vecinos que ME ENVIARON el maxID
     private List<Integer> max_send_neighbors = new ArrayList<Integer>(); //Lista de los vecinos que LE ENVIE el maxID
     private boolean text_received = false;
-
+    private int aliveCounter;
 
     //Variables necesarias para el Algoritmo de eleccion y echos.
     private boolean initiator;
     private boolean commited;
+    private boolean echoing;
     private int n;
     private int origen;
     private int confirms;
@@ -91,39 +92,52 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 
     @Override
     public void Election(int initID, int callerID) throws Exception{
-        if (!commited){
-            lookForNeigh();
-            commited = true;
-            n = 0; 
-            this.origen = callerID;
-            for (int i = 0;i < neighborRMI.length;i++) {
-                if (neighborID[i] == this.origen) {
-                    continue;
+        new Thread(() -> {
+            try{
+                if (!commited){
+                    lookForNeigh();
+                    commited = true;
+                    n = 0; 
+                    this.origen = callerID;
+                    for (int i = 0;i < neighborRMI.length;i++) {
+                        if (neighborID[i] == this.origen) {
+                            continue;
+                        }
+                        System.out.print(this.ID + ": ID " + initID + " se candidatea, avisare a " + neighborID[i] + ".\n");
+                        neighborRMI[i].Election(initID, this.ID); 
+                    }
                 }
-                System.out.print(this.ID + ": ID " + initID + " se candidatea, avisare a " + neighborID[i] + ".\n");
-                neighborRMI[i].Election(initID, this.ID); 
-            }
-        }
-        n++;
-        Echo(initID);          
+                n++;
+                if (n == neighborRMI.length && !echoing){
+                    commited = false;
+                    this.Echo(initID);
+                }
+            } catch(Exception e){}        
+        }).start();
     }
 
     @Override
     public void Echo(int initID) throws Exception{
-        if (n == neighborRMI.length){
-            commited = false;
-            if (initID == this.ID) {
-                System.out.print("Soy el representante??\n");
-            } else{
-                for (int i = 0; i < neighborRMI.length ;i++ ) {
-                    if (neighborID[i] == origen) {
-                        System.out.print(this.ID + ": mandare un Echo a mi origen "+this.origen+".\n");
-                        neighborRMI[i].Echo(initID);
+        new Thread(() -> {
+            try{
+                if (initID == this.ID) {
+                    confirms += 1;
+                    if (confirms == neighborID.length) {
+                        System.out.print("Soy el representante??\n");
                     }
-                }
-            }
-        }
+                } else{
+                    for (int i = 0; i < neighborRMI.length ;i++ ) {
+                        if (neighborID[i] == origen) {
+                            System.out.print(this.ID + ": mandare un Echo a mi origen "+this.origen+".\n");
+                            neighborRMI[i].Echo(initID);
+                            break;
+                        }
+                    }
+                } 
+            } catch(Exception e){}        
+        }).start();
     }
+
    
 
     //Algoritmo de mensajes de exploracion/eleccion.
