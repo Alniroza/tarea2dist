@@ -62,7 +62,7 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
             LocateRegistry.createRegistry(port);
             Naming.rebind(String.valueOf(ID), this);
         } catch (Exception e) { e.printStackTrace(); }
-        System.out.print("Proceso " + ID + " creado\n");
+        System.out.print("Proceso representante " + ID + " creado\n");
         Election(this.ID, this.ID);
 
     }
