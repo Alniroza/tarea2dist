@@ -17,15 +17,18 @@ public class ProcessMain{
         }
 
         boolean initiator = Boolean.parseBoolean(args[2]);
-        //String rutaArchivoCifrado = args[3];
-        String rutaArchivoCifrado = "/home/grupo14/proyecto_linux"; //Quitar de aqui
-        //String ipServidor = args[4];
-        String ipServidor = "10.10.2.214";
+        
+        //String rutaArchivoCifrado = "/home/grupo14/proyecto_linux"; //Quitar de aqui
+        //String ipServidor = "10.10.2.214";
         if(initiator){
             try {
+
+                String rutaArchivoCifrado = args[3];
+                String ipServidor = args[4];
+
                 Process proceso = new Process(ID, neighborID, initiator, rutaArchivoCifrado, ipServidor);
                 //Verifica cada cierto tiempo si el proceso es el representante
-                //proceso.timerRepresentative();
+                proceso.timerRepresentative();
             }
             catch (Exception e){
                 e.printStackTrace();
@@ -34,7 +37,7 @@ public class ProcessMain{
             try {
                 Process proceso = new Process(ID, neighborID, initiator);
                 //Verifica cada cierto tiempo si el proceso es el representante
-                //proceso.timerRepresentative();
+                proceso.timerRepresentative();
             }
             catch (Exception e){
                 e.printStackTrace();
