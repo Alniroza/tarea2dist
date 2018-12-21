@@ -22,6 +22,8 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
     private int origen;
     private int confirms;
 
+    public int aliveCounter = 0;
+
     //Variables importantes para definir vecinos.
     private Integer[] neighborID;
     private ProcessInterface[] neighborRMI;

@@ -25,7 +25,7 @@ public class ProcessMain{
             try {
                 Process proceso = new Process(ID, neighborID, initiator, rutaArchivoCifrado, ipServidor);
                 //Verifica cada cierto tiempo si el proceso es el representante
-                proceso.timerRepresentative();
+                //proceso.timerRepresentative();
             }
             catch (Exception e){
                 e.printStackTrace();
@@ -34,7 +34,7 @@ public class ProcessMain{
             try {
                 Process proceso = new Process(ID, neighborID, initiator);
                 //Verifica cada cierto tiempo si el proceso es el representante
-                proceso.timerRepresentative();
+                //proceso.timerRepresentative();
             }
             catch (Exception e){
                 e.printStackTrace();
