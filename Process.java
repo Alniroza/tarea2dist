@@ -87,8 +87,6 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
             neighborRMI[i].Election(this.ID, this.ID);
         }
 
-        createTimerTaskRepresentante(neighborRMI, neighborID, ID);
-
     }
 
     @Override
@@ -131,6 +129,14 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
                         confirms += 1;
                         if (confirms == neighborID.length) {
                             System.out.print("Soy el representante??\n");
+                            createTimerTaskRepresentante(neighborRMI, neighborID, ID);
+                            for(int j = 0; j < neighborRMI.length; j++){ 
+                                try{
+                                    neighborRMI[j].createTimerTaskVecino(neighborRMI[j]);
+                                } catch (Exception e){
+                                    e.printStackTrace();
+                                }
+                            }
                         }
                     } else{
                         for (int i = 0; i < neighborRMI.length ;i++ ) {
@@ -295,10 +301,11 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
 
     public void ReducirCounter() throws Exception{
         this.aliveCounter -=1;
-        System.out.println(this.ID + ": ha pasado algo de tiempo, reduciendo mi contador a: " + this.aliveCounter);
+        System.out.println(this.ID + ": ha pasado algo de tiempo, reduciendo el contador a: " + this.aliveCounter);
 
         if(aliveCounter < 0){
-            Election(this.ID, this.ID);
+            System.out.println(this.ID + ": proceso representante no responde, iniciando Initiator()");
+            Initiator();
         }
 
     }
@@ -324,7 +331,7 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
     }
 
     //esto debe ser ejecutado por los vecinos del representante una vez escogido y notificado
-    public void createTimerTaskVecino(ProcessInterface interfazPadre){
+    public void createTimerTaskVecino(ProcessInterface interfazPadre) throws Exception{
         try {
             TimerTask timerTask = new TimerTask(){
                 public void run(){ //Ejecucion
