@@ -8,4 +8,5 @@ interface ProcessInterface extends Remote {
     public void SendText(int callerID, String text) throws Exception;
     public void NotificarVecinos() throws Exception;
     public void ReducirCounter() throws Exception;
+    public void createTimerTaskVecino(ProcessInterface interfazPadre) throws Exception;
 }
