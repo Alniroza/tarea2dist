@@ -21,6 +21,8 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
     private int origen;
     private int confirms;
 
+    public int aliveCounter = 0;
+
     //Variables importantes para definir vecinos.
     private Integer[] neighborID;
     private ProcessInterface[] neighborRMI;
@@ -273,7 +275,7 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
         System.out.println(this.ID + ": ha pasado algo de tiempo, reduciendo mi contador a: " + this.aliveCounter);
 
         if(aliveCounter < 0){
-            Election(-1, this.ID, this.ID);
+            Election(this.ID, this.ID);
         }
 
     }
