@@ -1,0 +1,10 @@
+Integrantes: 	Alonzo Rodriguez 201473018-7
+		Juan Pablo León 201473047-0
+		Alexis Santibañez 201473116-7
+    
+    
+Se utilizo el algoritmo ECO para propagar a los otros procesos que el iniciador es el representante.
+Se utilizo thread para lograr que la ejecucion de llamadas remotas fuese paralela, pero debido a esto,
+el algoritmo solo se compila en java 1.8, por lo que no se pudo probar en la mv. El representante funciono
+por si solo. El algoritmo en java 1.8 retorna correctamente el representante y los historiales en cada proceso involucrado.
+Por último, incluimos en nuestra tarea el bonus, debido a que somos 3 integrantes y este fue obligatorio para nuestro caso.
