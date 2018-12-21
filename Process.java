@@ -261,6 +261,59 @@ public class Process extends UnicastRemoteObject implements ProcessInterface {
         text_received = true;
     }
 
+
+    //Metodos para ver cuando se muere el representante
+    public void NotificarVecinos() throws Exception{
+        this.aliveCounter +=1;
+        System.out.println(this.ID + ": proceso ha sido notificado por el representante, aumentando el contador a: " + this.aliveCounter);
+    }
+
+    public void ReducirCounter() throws Exception{
+        this.aliveCounter -=1;
+        System.out.println(this.ID + ": ha pasado algo de tiempo, reduciendo mi contador a: " + this.aliveCounter);
+
+        if(aliveCounter < 0){
+            Election(-1, this.ID, this.ID);
+        }
+
+    }
+
+    //esto debe ser ejectutado por el representante una vez escogido y notificado
+    public void createTimerTaskRepresentante(ProcessInterface[] neighborRMI, int[] neighborID, int ID) throws Exception{
+        try {
+            TimerTask timerTask = new TimerTask(){
+                public void run(){ //Ejecucion
+                    for(int i = 0; i < neighborRMI.length; i++){
+                        System.out.println(ID + ": notificando al proceseo " + neighborID[i] + " de que sigo vivo");
+                        try{ neighborRMI[i].NotificarVecinos();}
+                        catch(Exception e){e.printStackTrace();}
+                    }
+                }
+            };
+            Timer timer = new Timer();
+            //Inicia la tarea, desde 0seg, cada 3seg
+            timer.scheduleAtFixedRate(timerTask, 0, 5000);
+        } catch(Exception ex) {ex.printStackTrace();
+        }
+
+    }
+
+    //esto debe ser ejecutado por los vecinos del representante una vez escogido y notificado
+    public void createTimerTaskVecino(ProcessInterface interfazPadre){
+        try {
+            TimerTask timerTask = new TimerTask(){
+                public void run(){ //Ejecucion
+                    try{interfazPadre.ReducirCounter();}
+                    catch (Exception e){e.printStackTrace();}
+                }
+            };
+            Timer timer = new Timer();
+            //Inicia la tarea, desde 0seg, cada 3seg
+            timer.scheduleAtFixedRate(timerTask, 0, 10000);
+        } catch(Exception ex) {ex.printStackTrace();
+        }
+    }
+
 } //Class end
 
 
